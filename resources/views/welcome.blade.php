@@ -4,17 +4,21 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>Intelligent Compaction</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
-        <!-- API -->
+        <!-- Google API -->
         <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCY0B3_Fr1vRpgJDdbvNmrVyXmoOOtiq64&libraries=drawing&callback=initMap"
         async
         defer
       ></script>
+
+      {{-- font awesome icons --}}
+      {{-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"> --}}
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
       
 
         <!-- Styles -->
@@ -27,7 +31,9 @@
                 font-family: 'Nunito', sans-serif;
             }
             #map {
-            height: 90%;
+            height: 100%;
+            /* width: 100%; */
+            margin-left: 250px;
             }
 
             /* 
@@ -35,13 +41,83 @@
             */
             html,
             body {
-            height: 100%;
+            height: 95%;
             margin: 0;
             padding: 0;
             }
+            /* The Modal (background) */
+            .modal {
+              display: none; /* Hidden by default */
+              position: fixed; /* Stay in place */
+              z-index: 1; /* Sit on top */
+              padding-top: 100px; /* Location of the box */
+              left: 0;
+              top: 0;
+              width: 100%; /* Full width */
+              height: 100%; /* Full height */
+              overflow: auto; /* Enable scroll if needed */
+              background-color: rgb(0,0,0); /* Fallback color */
+              background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            }
+
+            /* Modal Content */
+            .modal-content {
+              background-color: #fefefe;
+              margin: auto;
+              padding: 20px;
+              border: 1px solid #888;
+              width: 350px;
+            }
+
+            /* sidebar  */
+            .sidenav {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #EFEFEF;
+            overflow-x: hidden;
+            transition: 0.1s;
+            margin-top: 65px;
+            padding-top: 65px;
+            box-shadow: 5px 0 8px -3px #333
+          }
+        .sidenav a {
+          padding: 8px 8px 8px 32px;
+          text-decoration: none;
+          font-size: 15px;
+          /* color: #FFF; */
+          display: block;
+          transition: 0.3s;
+          cursor: pointer;
+        }
+
+        .sidenav .closebtn {
+          position: absolute;
+          top: 0;
+          right: 25px;
+          font-size: 36px;
+          margin-left: 50px;
+        }
+
+        @media screen and (max-height: 450px) {
+          .sidenav {padding-top: 15px;}
+          .sidenav a {font-size: 18px;}
+        }
+
         </style>
     </head>
-    <body class="">
+    <body style="background-color: #003366">
+      <div style="text-align: center; color: #FFF; position: relative; z-index:5">
+        <h3>Intelligent Compaction Visualizer</h3>
+      </div>
+      
+      <div id="mySidenav" class="sidenav">
+        <a id="modalButton"><i class="fa fa-map-o"></i> CMV</a>
+      </div>
+      
         {{-- <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             @if (Route::has('login'))
                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
@@ -56,13 +132,70 @@
                     @endauth
                 </div>
             @endif
-
         </div> --}}
-        <h3 style="text-align: center">CMV Graph</h3>
-        <input type="file" id="csvFile" accept=".csv" />
+
+       
+
         <div id="map"></div>
+
+
+        
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+
+          <!-- Modal content -->
+          <div class="modal-content">
+            <div class="text-center close" style="border:1px dashed #CCC; border-radius: 10px; padding: 10px">
+                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                <p>Upload file here.</p>
+                <br>
+              <div class="text-center">
+                <input type="file" id="csvFile" accept=".csv"  />
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <script>
+          // Get the modal
+          var modal = document.getElementById("myModal");
+          
+          // Get the button that opens the modal
+          var btn = document.getElementById("modalButton");
+          
+          // Get the <span> element that closes the modal
+          var span = document.getElementsByClassName("close")[0];
+          
+          // When the user clicks the button, open the modal 
+          btn.onclick = function() {
+            modal.style.display = "block";
+          }
+          
+          // When the user clicks on <span> (x), close the modal
+          span.onclick = function() {
+            modal.style.display = "none";
+          }
+          
+          // When the user clicks anywhere outside of the modal, close it
+          window.onclick = function(event) {
+            if (event.target == modal) {
+              modal.style.display = "none";
+            }
+          }
+          </script>
+          <script>
+            function openNav() {
+              document.getElementById("mySidenav").style.width = "250px";
+            }
+            
+            function closeNav() {
+              document.getElementById("mySidenav").style.width = "0";
+            }
+            </script>
     </body>
-    
+
     <script>
         // This example creates a 2-pixel-wide red polyline showing the path of
         // the first trans-Pacific flight between Oakland, CA, and Brisbane,
@@ -70,8 +203,8 @@
         let map;
         function initMap() {
           map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 15,
-            center: { lat: 31.774294046694326, lng: -106.50462446577463 },
+            zoom: 18,
+            center: { lat: 31.769758,  lng: -106.505322 },
             mapTypeId: "satellite",
           });
         }
@@ -81,6 +214,8 @@
               picker = document.getElementById("csvFile")
           picker.onchange = () => reader.readAsText(picker.files[0]);
           reader.onload = () => {
+            // close modal 
+            modal.style.display = "none";
             let csv = reader.result;
             csv = csv.split(/\r?\n/);
             for (let i = 0; i < csv.length-1; i++) {
@@ -116,8 +251,12 @@
             reCenter = csv[1].split(',');
             var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));
             map.setCenter(latlng);
+            map.setMapTypeId('satellite');
           }
         }
     
       </script>
+      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </html>
