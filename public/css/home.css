@@ -1,0 +1,41 @@
+/* 
+* Optional: Makes the sample page fill the window. 
+*/
+html,
+body {
+  height: 100%;
+  min-height: 100% !important;
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  background-color: #003366;
+  color: #efefef;
+  padding: 10px 0;
+  z-index: 2;
+}
+
+.content {
+  min-height: 95%;
+  display: flex;
+  flex-direction: row;
+}
+
+#map {
+  height: 95%;
+}
+
+/* sidebar  */
+.sidebar {
+  height: 95%;
+  width: 250px;
+  padding-top: 80px;
+  padding-left: 10px;
+  background-color: #efefef;
+  box-shadow: 5px 0 8px -3px #333;
+}
+.mapContainer {
+  width: 100%;
+  flex: 3;
+}
