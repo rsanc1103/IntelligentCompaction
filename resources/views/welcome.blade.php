@@ -235,18 +235,18 @@
 
               console.log(element);
               flightPath = {
-                // paths: [
-                //   { lat: parseFloat(element[4]), lng: parseFloat(element[0]) },
-                //   { lat: parseFloat(element[5]), lng: parseFloat(element[1]) },
-                //   { lat: parseFloat(element[6]), lng: parseFloat(element[2]) },
-                //   { lat: parseFloat(element[7]), lng: parseFloat(element[3]) },
-                // ],
                 paths: [
-                  { lat: parseFloat(element[0]), lng: parseFloat(element[4]) },
-                  { lat: parseFloat(element[1]), lng: parseFloat(element[5]) },
-                  { lat: parseFloat(element[2]), lng: parseFloat(element[6]) },
-                  { lat: parseFloat(element[3]), lng: parseFloat(element[7]) },
+                  { lat: parseFloat(element[4]), lng: parseFloat(element[0]) },
+                  { lat: parseFloat(element[5]), lng: parseFloat(element[1]) },
+                  { lat: parseFloat(element[6]), lng: parseFloat(element[2]) },
+                  { lat: parseFloat(element[7]), lng: parseFloat(element[3]) },
                 ],
+                // paths: [
+                //   { lat: parseFloat(element[0]), lng: parseFloat(element[4]) },
+                //   { lat: parseFloat(element[1]), lng: parseFloat(element[5]) },
+                //   { lat: parseFloat(element[2]), lng: parseFloat(element[6]) },
+                //   { lat: parseFloat(element[3]), lng: parseFloat(element[7]) },
+                // ],
                 geodesic: true,
                 strokeColor: element[9],
                 strokeOpacity: 1.0,
@@ -269,8 +269,8 @@
               marker.setMap(map);
             }
             reCenter = csv[1].split(',');
-            var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));
-            // var latlng = new google.maps.LatLng(parseFloat(reCenter[4]), parseFloat(reCenter[0]));
+            // var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));
+            var latlng = new google.maps.LatLng(parseFloat(reCenter[4]), parseFloat(reCenter[0]));
             map.setCenter(latlng);
             map.setMapTypeId('satellite');
           }
