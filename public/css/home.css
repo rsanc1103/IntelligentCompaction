@@ -16,6 +16,17 @@ body {
   z-index: 2;
 }
 
+#square {
+  height: 20px;
+  width: 20px;
+  border: 1px solid black;
+  
+}
+
+.col-sm-2 > span, .col-sm-2 > p {
+  display: inline-block;
+}
+
 .content {
   min-height: 95%;
   display: flex;
