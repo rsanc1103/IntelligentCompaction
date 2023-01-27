@@ -26,7 +26,7 @@ window.onload = () => {
     //   return;
     // }
 
-    for (let i = 1; i < csv.length - 1; i++) {
+    for (let i = 1; i < csv.length - 4; i++) {
       let element = csv[i].split(",");
 
       flightPath = {
@@ -55,7 +55,8 @@ window.onload = () => {
       var latCenter = (parseFloat(element[0]) + parseFloat(element[2])) / 2;
       var lngCenter = (parseFloat(element[4]) + parseFloat(element[6])) / 2;
       // var cmvMarker = new google.maps.LatLng(parseFloat(element[0]), parseFloat(element[4]));
-      var cmvMarker = new google.maps.LatLng(latCenter, lngCenter);
+      //var cmvMarker = new google.maps.LatLng(latCenter, lngCenter);
+      var cmvMarker = new google.maps.LatLng(lngCenter, latCenter);
       var marker = new google.maps.Marker({
         position: cmvMarker,
         map: map,
@@ -63,6 +64,35 @@ window.onload = () => {
       });
       marker.setMap(map);
     }
+    var legendOptions = {}
+    for (let i = csv.length - 4; i < csv.length; i++){
+      let element = csv[i].split(",");
+      if (i == csv.length - 4){
+        legendOptions["title"] = {name: element[0]}; 
+      }
+      else{
+        legendOptions[element[1]] = {name: element[1], color: element[0]};
+      }
+    }
+    const legend = document.getElementById("legend");
+    legend.innerHTML = "";
+    const title = document.createElement("div");
+    title.innerHTML = '<div><h3>'+ legendOptions["title"]["name"] +'</h3></div>';
+    legend.appendChild(title);
+    //console.log(legendOptions);
+    for (const key in legendOptions) {
+      if (key != "title"){
+        const type = legendOptions[key];
+        const name = type.name;
+        const color = type.color;
+        const div = document.createElement("div");
+
+        div.innerHTML = name;
+        legend.appendChild(div);
+      }
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+    
     reCenter = csv[1].split(",");
     // var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));
     var latlng = new google.maps.LatLng(
