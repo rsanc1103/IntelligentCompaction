@@ -91,7 +91,7 @@ window.onload = () => {
         legend.appendChild(div);
       }
     }
-    map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
     
     reCenter = csv[1].split(",");
     // var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));

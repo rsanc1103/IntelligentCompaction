@@ -35,7 +35,7 @@
         </div>
         <div class="mapContainer">
           <div id="map"></div>
-          <div id="legend"><h3>Legend</h3></div>
+          <div id="legend" style="visibility: hidden;"></div>
         </div>
       </div>
     </div>
