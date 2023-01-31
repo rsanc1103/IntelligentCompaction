@@ -55,8 +55,8 @@ window.onload = () => {
       var latCenter = (parseFloat(element[0]) + parseFloat(element[2])) / 2;
       var lngCenter = (parseFloat(element[4]) + parseFloat(element[6])) / 2;
       // var cmvMarker = new google.maps.LatLng(parseFloat(element[0]), parseFloat(element[4]));
-      //var cmvMarker = new google.maps.LatLng(latCenter, lngCenter);
-      var cmvMarker = new google.maps.LatLng(lngCenter, latCenter);
+      var cmvMarker = new google.maps.LatLng(latCenter, lngCenter);
+      //var cmvMarker = new google.maps.LatLng(lngCenter, latCenter);
       var marker = new google.maps.Marker({
         position: cmvMarker,
         map: map,
