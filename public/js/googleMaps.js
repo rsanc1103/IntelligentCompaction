@@ -87,7 +87,7 @@ window.onload = () => {
         const color = type.color;
         const div = document.createElement("div");
 
-        div.innerHTML = '<div id="square" style="background-color:'+color+';"></div>'+ name;
+        div.innerHTML = '<br></br><div class="row"><div class="col-1"><div id="square" style="background-color:'+color+';"></div></div><div class="col">'+name+'</div></div>';
         legend.appendChild(div);
       }
     }

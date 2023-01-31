@@ -23,10 +23,6 @@ body {
   
 }
 
-.col-sm-2 > span, .col-sm-2 > p {
-  display: inline-block;
-}
-
 .content {
   min-height: 95%;
   display: flex;
