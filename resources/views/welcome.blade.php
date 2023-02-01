@@ -39,6 +39,7 @@
         </div>
         <div class="mapContainer">
           <div id="map"></div>
+          <div id="legend" style="visibility: hidden;"></div>
         </div>
       </div>
     </div>

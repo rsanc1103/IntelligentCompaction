@@ -68,6 +68,40 @@ window.onload = () => {
         marker.setMap(map);
       }
     }
+    var legendOptions = {};
+    for (let i = csv.length - 4; i < csv.length; i++) {
+      let element = csv[i].split(",");
+      if (i == csv.length - 4) {
+        legendOptions["title"] = { name: element[0] };
+      } else {
+        legendOptions[element[1]] = { name: element[1], color: element[0] };
+      }
+    }
+    const legend = document.getElementById("legend");
+    legend.innerHTML = "";
+    const title = document.createElement("div");
+    title.innerHTML =
+      "<div><h3>" + legendOptions["title"]["name"] + "</h3></div>";
+    legend.appendChild(title);
+    //console.log(legendOptions);
+    for (const key in legendOptions) {
+      if (key != "title") {
+        const type = legendOptions[key];
+        const name = type.name;
+        const color = type.color;
+        const div = document.createElement("div");
+
+        div.innerHTML =
+          '<br></br><div class="row"><div class="col-1"><div id="square" style="background-color:' +
+          color +
+          ';"></div></div><div class="col">' +
+          name +
+          "</div></div>";
+        legend.appendChild(div);
+      }
+    }
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
+
     reCenter = csv[1].split(",");
     // var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));
     var latlng = new google.maps.LatLng(
