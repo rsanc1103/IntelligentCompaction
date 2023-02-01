@@ -26,7 +26,7 @@ window.onload = () => {
     //   return;
     // }
 
-    for (let i = 1; i < csv.length - 1; i++) {
+    for (let i = 1; i < csv.length - 5; i++) {
       let element = csv[i].split(",");
 
       flightPath = {
@@ -52,16 +52,21 @@ window.onload = () => {
       polygon = new google.maps.Polygon(flightPath);
       polygon.setMap(map);
 
-      var latCenter = (parseFloat(element[0]) + parseFloat(element[2])) / 2;
-      var lngCenter = (parseFloat(element[4]) + parseFloat(element[6])) / 2;
-      // var cmvMarker = new google.maps.LatLng(parseFloat(element[0]), parseFloat(element[4]));
-      var cmvMarker = new google.maps.LatLng(latCenter, lngCenter);
-      var marker = new google.maps.Marker({
-        position: cmvMarker,
-        map: map,
-        label: element[8],
-      });
-      marker.setMap(map);
+      var showLabels = document.getElementById("showLabels");
+      if (showLabels.checked == true) {
+        var lngCenter = (parseFloat(element[2]) + parseFloat(element[0])) / 2;
+        var latCenter = (parseFloat(element[6]) + parseFloat(element[4])) / 2;
+        // var latCenter = (parseFloat(element[0]) + parseFloat(element[2])) / 2;
+        // var lngCenter = (parseFloat(element[4]) + parseFloat(element[6])) / 2;
+        // var cmvMarker = new google.maps.LatLng(parseFloat(element[0]), parseFloat(element[4]));
+        var cmvMarker = new google.maps.LatLng(latCenter, lngCenter);
+        var marker = new google.maps.Marker({
+          position: cmvMarker,
+          map: map,
+          label: element[8],
+        });
+        marker.setMap(map);
+      }
     }
     reCenter = csv[1].split(",");
     // var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));

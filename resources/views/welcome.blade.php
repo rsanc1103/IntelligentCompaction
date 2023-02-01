@@ -31,6 +31,10 @@
         <div>
           <div class="sidebar">
             <input type="file" id="csvFile" accept=".csv"  />
+            <div style="align-items: center; justify-content: center; align-content:center">
+              <label for="">Show markers</label>
+              <input type="checkbox" id="showLabels">
+            </div>
           </div>
         </div>
         <div class="mapContainer">
