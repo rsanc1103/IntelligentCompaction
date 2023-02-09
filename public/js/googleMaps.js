@@ -1,7 +1,4 @@
-// This example creates a 2-pixel-wide red polyline showing the path of
-// the first trans-Pacific flight between Oakland, CA, and Brisbane,
-// Australia which was made by Charles Kingsford Smith.
-let map;
+/** Initializes the map and the custom popup. */
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
     zoom: 18,
@@ -10,100 +7,132 @@ function initMap() {
   });
 }
 window.initMap = initMap;
+
+// labels in map
+let popup, Popup;
+
 window.onload = () => {
   var reader = new FileReader(),
     picker = document.getElementById("csvFile");
   picker.onchange = () => reader.readAsText(picker.files[0]);
 
   reader.onload = () => {
+    // read cvs file and draw on map
     let csv = reader.result;
-
     csv = csv.split(/\r?\n/);
-
-    // check if file has different format
-    // if(csv[0] != "lat1,lat2,lat3,lat4,lng1,lng2,lng3,lng4,cmv,color"){
-    //   alert('Unable to read file');
-    //   return;
-    // }
-
     for (let i = 1; i < csv.length - 5; i++) {
-      let element = csv[i].split(",");
+      let tokenFromFile = csv[i].split(",");
 
-      flightPath = {
+      // draw segment areas in map with coordinates and color value from file read
+      segmentArea = {
         paths: [
-          { lat: parseFloat(element[4]), lng: parseFloat(element[0]) },
-          { lat: parseFloat(element[5]), lng: parseFloat(element[1]) },
-          { lat: parseFloat(element[6]), lng: parseFloat(element[2]) },
-          { lat: parseFloat(element[7]), lng: parseFloat(element[3]) },
+          {
+            lat: parseFloat(tokenFromFile[4]),
+            lng: parseFloat(tokenFromFile[0]),
+          },
+          {
+            lat: parseFloat(tokenFromFile[5]),
+            lng: parseFloat(tokenFromFile[1]),
+          },
+          {
+            lat: parseFloat(tokenFromFile[6]),
+            lng: parseFloat(tokenFromFile[2]),
+          },
+          {
+            lat: parseFloat(tokenFromFile[7]),
+            lng: parseFloat(tokenFromFile[3]),
+          },
         ],
-        // paths: [
-        //   { lat: parseFloat(element[0]), lng: parseFloat(element[4]) },
-        //   { lat: parseFloat(element[1]), lng: parseFloat(element[5]) },
-        //   { lat: parseFloat(element[2]), lng: parseFloat(element[6]) },
-        //   { lat: parseFloat(element[3]), lng: parseFloat(element[7]) },
-        // ],
         geodesic: true,
-        strokeColor: element[9],
+        strokeColor: tokenFromFile[9],
         strokeOpacity: 1.0,
         strokeWeight: 1,
-        fillColor: element[9],
+        fillColor: tokenFromFile[9],
         fillOpacity: 0.6,
       };
-      polygon = new google.maps.Polygon(flightPath);
+      polygon = new google.maps.Polygon(segmentArea);
       polygon.setMap(map);
 
-      var showLabels = document.getElementById("showLabels");
-      if (showLabels.checked == true) {
-        var lngCenter = (parseFloat(element[2]) + parseFloat(element[0])) / 2;
-        var latCenter = (parseFloat(element[6]) + parseFloat(element[4])) / 2;
-        // var latCenter = (parseFloat(element[0]) + parseFloat(element[2])) / 2;
-        // var lngCenter = (parseFloat(element[4]) + parseFloat(element[6])) / 2;
-        // var cmvMarker = new google.maps.LatLng(parseFloat(element[0]), parseFloat(element[4]));
-        var cmvMarker = new google.maps.LatLng(latCenter, lngCenter);
-        var marker = new google.maps.Marker({
-          position: cmvMarker,
-          map: map,
-          label: element[8],
-        });
-        marker.setMap(map);
+      /**
+       * A customized popup on the map.
+       */
+      class Popup extends google.maps.OverlayView {
+        position;
+        containerDiv;
+        mapLabel;
+        constructor(position, value) {
+          super();
+          this.position = position;
+          // create div for segment values
+          const segmentValue = document.createElement("div");
+          segmentValue.innerHTML = value;
+          // add styling
+          segmentValue.classList.add("popup-bubble");
+          // store segment value in class in order to manipulate
+          this.mapLabel = segmentValue;
+          Popup.preventMapHitsAndGesturesFrom(this.mapLabel);
+        }
+        /** Called when the popup is added to the map. */
+        onAdd() {
+          this.getPanes().floatPane.appendChild(this.mapLabel);
+        }
+        /** Called when the popup is removed from the map. */
+        onRemove() {
+          if (this.mapLabel.parentElement) {
+            this.mapLabel.parentElement.removeChild(this.mapLabel);
+          }
+        }
+        /** Called each frame when the popup needs to draw itself. */
+        draw() {
+          const divPosition = this.getProjection().fromLatLngToDivPixel(
+            this.position
+          );
+          // Hide the popup when it is far out of view.
+          const display =
+            Math.abs(divPosition.x) < 4000 && Math.abs(divPosition.y) < 4000
+              ? "block"
+              : "none";
+
+          if (display === "block") {
+            this.mapLabel.style.left = divPosition.x + "px";
+            this.mapLabel.style.top = divPosition.y + "px";
+          }
+
+          if (this.mapLabel.style.display !== display) {
+            this.mapLabel.style.display = display;
+          }
+        }
       }
+
+      // get segment coordinate and find center to place label
+      var lngCenter =
+        (parseFloat(tokenFromFile[2]) + parseFloat(tokenFromFile[0])) / 2;
+      var latCenter =
+        (parseFloat(tokenFromFile[6]) + parseFloat(tokenFromFile[4])) / 2;
+      popup = new Popup(
+        new google.maps.LatLng(latCenter, lngCenter),
+        tokenFromFile[8]
+      );
+      popup.setMap(map);
     }
+
+    // get legend info from file read
     var legendOptions = {};
     for (let i = csv.length - 4; i < csv.length; i++) {
-      let element = csv[i].split(",");
+      let legendToken = csv[i].split(",");
       if (i == csv.length - 4) {
-        legendOptions["title"] = { name: element[0] };
+        legendOptions["title"] = { name: legendToken[0] };
       } else {
-        legendOptions[element[1]] = { name: element[1], color: element[0] };
+        legendOptions["label" + (i - csv.length + 4)] = {
+          name: legendToken[1],
+          color: legendToken[0],
+        };
       }
     }
-    const legend = document.getElementById("legend");
-    legend.innerHTML = "";
-    const title = document.createElement("div");
-    title.innerHTML =
-      "<div><h3>" + legendOptions["title"]["name"] + "</h3></div>";
-    legend.appendChild(title);
-    //console.log(legendOptions);
-    for (const key in legendOptions) {
-      if (key != "title") {
-        const type = legendOptions[key];
-        const name = type.name;
-        const color = type.color;
-        const div = document.createElement("div");
+    makeLegend(legendOptions);
 
-        div.innerHTML =
-          '<br></br><div class="row"><div class="col-1"><div id="square" style="background-color:' +
-          color +
-          ';"></div></div><div class="col">' +
-          name +
-          "</div></div>";
-        legend.appendChild(div);
-      }
-    }
-    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
-
+    // re-center map to coordinates in file read
     reCenter = csv[1].split(",");
-    // var latlng = new google.maps.LatLng(parseFloat(reCenter[0]), parseFloat(reCenter[4]));
     var latlng = new google.maps.LatLng(
       parseFloat(reCenter[4]),
       parseFloat(reCenter[0])
@@ -112,3 +141,44 @@ window.onload = () => {
     map.setMapTypeId("satellite");
   };
 };
+
+function makeLegend(legendOptions) {
+  // construct legend for map with info from file read
+  const legend = document.createElement("div");
+  const legend_title = document.createElement("h6");
+
+  legend.classList.add("legend");
+  // legend title
+  legend_title.innerHTML = legendOptions["title"]["name"];
+  legend.appendChild(legend_title);
+
+  for (const label in legendOptions) {
+    if (label != "title") {
+      // legend rows
+      const row = document.createElement("div");
+      row.style.paddingBottom = "5px";
+      row.classList.add("row");
+
+      // legend color square
+      const col1 = document.createElement("div");
+      col1.classList.add("col-1");
+      const labelColor = document.createElement("div");
+      labelColor.classList.add("col");
+      labelColor.classList.add("square");
+      labelColor.style.backgroundColor = legendOptions[label].color;
+
+      // legend label
+      const label_text = document.createElement("div");
+      label_text.classList.add("legend_label");
+      label_text.classList.add("col");
+      label_text.innerHTML = legendOptions[label].name;
+
+      // append elements
+      row.appendChild(col1);
+      row.appendChild(label_text);
+      col1.appendChild(labelColor);
+      legend.appendChild(row);
+    }
+  }
+  map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
+}

@@ -8,59 +8,30 @@ body {
   margin: 0;
   padding: 0;
 }
-
 .title {
   background-color: #003366;
   color: #efefef;
   padding: 10px 0;
   z-index: 2;
 }
-
-#square {
-  height: 20px;
-  width: 20px;
-  border: 1px solid black;
-  
-}
-
 .content {
-  min-height: 95%;
+  min-height: 90%;
   display: flex;
   flex-direction: row;
 }
 
 #map {
-  height: 95%;
-}
-
-#legend {
-  font-family: Arial, sans-serif;
-  background: #fff;
-  padding: 10px;
-  margin: 10px;
-  border: 3px solid #000;
-}
-
-#legend h3 {
-  font-size: 14px;
-  font-weight: bolder;
-  margin-top: 0;
-}
-
-#legend img {
-  vertical-align: middle;
+  height: 100%;
 }
 
 /* sidebar  */
 .sidebar {
-  height: 95%;
+  height: 100%;
   width: 250px;
   padding-top: 80px;
   padding-left: 10px;
   background-color: #efefef;
-  box-shadow: 5px 0 8px -3px #333;
 }
 .mapContainer {
   width: 100%;
-  flex: 3;
 }

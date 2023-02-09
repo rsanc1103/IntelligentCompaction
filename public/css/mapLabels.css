@@ -1,0 +1,9 @@
+/* The popup bubble styling. */
+.popup-bubble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  color: black;
+  overflow-y: auto;
+}
